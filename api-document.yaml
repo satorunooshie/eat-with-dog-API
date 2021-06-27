@@ -1,0 +1,1003 @@
+openapi: 3.0.2
+info:
+  title: eat-with-dog API仕様書
+  description: |-
+    <b>API仕様書</b><br>
+  version: 1.0.0
+servers:
+  - url: http://localhost:8888/
+tags:
+  - name: setting
+    description: 設定関連
+  - name: user
+    description: ユーザ関連
+  - name: map
+    description: マップ関連
+  - name: shop
+    description: 店舗関連
+paths:
+  /setting:
+    get:
+      tags:
+        - setting
+      summary: 設定取得API
+      description:
+        DBまたはCacheからユーザの設定情報を取得する
+      parameters:
+        - name: x-token
+          in: header
+          description: 認証トークン
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SettingGetResponse'
+    put:
+      tags:
+        - setting
+        - user
+      summary: 設定更新API
+      description:
+        ユーザの設定情報を更新する
+      parameters:
+        - name: x-token
+          in: header
+          description: 認証トークン
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: request.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SettingPutRequest'
+        required: true
+      responses:
+        200:
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SettingPutResponse'
+      x-codegen-request-body-name: body
+  /shop:
+    post:
+      tags:
+        - shop
+      summary: 店舗追加API
+      description:
+        認証ユーザによって店舗を追加する
+      parameters:
+        - name: x-token
+          in: header
+          description: 認証トークン
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: request.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ShopPostRequest'
+        required: true
+      responses:
+        201:
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShopPostResponse'
+      x-codegen-request-body-name: body
+  /shop/{id}:
+    get:
+      tags:
+        - shop
+      summary: 店舗概要取得API
+      description:
+        DBまたはCacheから店舗概要の情報を取得する
+      parameters:
+        - name: id
+          in: path
+          description: 店舗に紐づくID
+          required: true
+          type: integer
+      responses:
+        200:
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShopGetResponse'
+    put:
+      tags:
+        - shop
+      summary: 店舗概要更新API
+      description:
+        認証ユーザによって店舗情報を更新する
+      parameters:
+        - name: x-token
+          in: header
+          description: 認証トークン
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: request.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ShopPutRequest'
+        required: true
+      responses:
+        204:
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShopPutResponse'
+      x-codegen-request-body-name: body
+    delete:
+      tags:
+        - shop
+      summary: 店舗削除API
+      description:
+        認証ユーザによって店舗情報を削除する(CCによる認証が必要となる)
+      parameters:
+        - name: x-token
+          in: header
+          description: 認証トークン
+          required: true
+          schema:
+            type: string
+      responses:
+        204:
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShopDeleteResponse'
+      x-codegen-request-body-name: body
+  shop/favorite:
+    get:
+      tags:
+        - user
+      summary: お気に入り店舗一覧API
+      description:
+        認証ユーザのお気に入り店舗の一覧をDBまたはCacheから取得する
+      parameters:
+        - name: x-token
+          in: header
+          description: 認証トークン
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShopFavoriteGetResponse'
+    post:
+      tags:
+        - user
+      summary: お気に入り店舗追加API
+      description:
+        認証ユーザのお気に入り店舗を追加する
+      parameters:
+        - name: x-token
+          in: header
+          description: 認証トークン
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: request.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ShopFavoritePostRequest'
+        required: true
+      responses:
+        201:
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShopFavoritePostResponse'
+      x-codegen-request-body-name: body
+    delete:
+      tags:
+        - user
+      summary: お気に入り店舗削除API
+      description:
+        認証ユーザのお気に入り店舗を削除する
+      parameters:
+        - name: x-token
+          in: header
+          description: 認証トークン
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: request.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ShopFavoriteDeleteRequest'
+        required: true
+      responses:
+        204:
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShopFavoriteDeleteResponse'
+      x-codegen-request-body-name: body
+  shop/list:
+    get:
+      tags:
+        - shop
+        - map
+      summary: 店舗一覧API
+      description:
+        現在地・または条件による検索結果の店舗一覧を取得する
+      parameters:
+        - name: something boolean
+          in: query
+          description: リードならOKなどの条件(複数ある予定なのでこれから増やす)
+          required: true
+          schema:
+            type: boolean
+        - name: page
+          in: query
+          description: ページネーション
+          required: true
+          schema:
+            type: integer
+        - name: lat
+          in: query
+          description: 緯度(listから検索する場合は不要)
+          required: false
+          schema:
+            type: Decimal
+        - name: alt
+          in: query
+          description: 経度(listから検索する場合は不要)
+          schema:
+            type: Decimal
+        - name: lat
+          in: query
+          description: 緯度(listから検索する場合は不要)
+          required: false
+          schema:
+            type: Decimal
+      responses:
+        200:
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShopListGetResponse'
+  map/condition:
+    get:
+      tags:
+        - map
+      summary: 地図の検索条件取得API
+      description:
+        地図検索条件を取得する
+      responses:
+        200:
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MapConditionGetResponse'
+  map/search:
+    get:
+      tags:
+        - map
+      summary: 地図の検索結果取得API
+      description:
+        現在地・または条件による検索結果の店舗一覧を取得する
+      parameters:
+        - name: something boolean
+          in: query
+          description: リードならOKなどの条件(複数ある予定なのでこれから増やす)
+          required: true
+          schema:
+            type: boolean
+        - name: page
+          in: query
+          description: ページネーション
+          required: true
+          schema:
+            type: integer
+        - name: lat
+          in: query
+          description: 緯度(listから検索する場合は不要)
+          required: false
+          schema:
+            type: Decimal
+        - name: alt
+          in: query
+          description: 経度(listから検索する場合は不要)
+          schema:
+            type: Decimal
+        - name: lat
+          in: query
+          description: 緯度(listから検索する場合は不要)
+          required: false
+          schema:
+            type: Decimal
+      responses:
+        200:
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MapSearchGetResponse'
+components:
+  schemas:
+      SettingGetResponse:
+        type: object
+        properties:
+          frequency:
+            type: integer
+            description: プッシュ通知の頻度
+      SettingPutRequest:
+        type: object
+        properties:
+          name:
+            type: string
+            description: 名前
+          mail:
+            type: string
+            description: メールアドレス
+          password:
+            type: string
+            description: password
+      SettingPutResponse:
+        type: object
+        properties:
+          error:
+            type: string
+            description: エラー文言
+          status_code:
+            type: integer
+            description: ステータスコード
+      ShopPostRequest:
+        type: object
+        properties:
+          name:
+            type: string
+            description: 店舗名
+          lunch_price_min:
+            type: integer
+            description: 昼の平均会計金額の低い方
+          lunch_price_max:
+            type: integer
+            description: 昼の平均会計金額の高い方
+          dinner_price_min:
+            type: integer
+            description: 夜の平均会計金額の低い方
+          dinner_price_max:
+            type: integer
+            description: 夜の平均会計金額の高い方
+          tel:
+            type: string
+            description: 電話番号
+          address:
+            type: string
+            description: 住所
+          inside_seat_number:
+            type: integer
+            description: 店内の席数
+          terrace_seat_number:
+            type: integer
+            description: テラス席の数
+          monday_open_time:
+            type: string
+            format: date-time
+            description: 月曜日の開店時間
+          monday_close_time:
+            type: string
+            format: date-time
+            description: 月曜日の閉店時間
+          tuesday_open_time:
+            type: string
+            format: date-time
+            description: 火曜日の開店時間
+          tuesday_close_time:
+            type: string
+            format: date-time
+            description: 火曜日の閉店時間
+          wednesday_open_time:
+            type: string
+            format: date-time
+            description: 水曜日の開店時間
+          wednesday_close_time:
+            type: string
+            format: date-time
+            description: 水曜日の閉店時間
+          thursday_open_time:
+            type: string
+            format: date-time
+            description: 木曜日の開店時間
+          thursday_close_time:
+            type: string
+            format: date-time
+            description: 木曜日の閉店時間
+          friday_open_time:
+            type: string
+            format: date-time
+            description: 金曜日の開店時間
+          friday_close_time:
+            type: string
+            format: date-time
+            description: 金曜日の閉店時間
+          saturday_open_time:
+            type: string
+            format: date-time
+            description: 土曜日の開店時間
+          saturday_close_time:
+            type: string
+            format: date-time
+            description: 土曜日の閉店時間
+          sunday_open_time:
+            type: string
+            format: date-time
+            description: 日曜日の開店時間
+          sunday_close_time:
+            type: string
+            format: date-time
+            description: 日曜日の閉店時間
+          holiday_ids:
+            type: array
+            description: 定休日
+            items:
+              $ref: '#/components/schemas/Holiday_id'
+          tag_ids:
+            type: array
+            description: 洋食やカフェなどのタグ
+            items:
+              $ref: '#/components/schemas/Tag_id'
+          can_smoke:
+            type: boolean
+            description: 喫煙の可否
+          parking_number:
+            type: integer
+            description: 駐車場の有無
+          has_wifi:
+            type: boolean
+            description: wifiがあるかどうか
+          card_ids:
+            type: array
+            description: どのようなカードが使えるか
+            items:
+              $ref: '#/components/schemas/Card_id'
+          electronic_ids:
+            type: array
+            description: どのような電子決済ができるか
+            items:
+              $ref: '#/components/schemas/Electronic_id'
+          qr_ids:
+            type: array
+            description: どのようなQR決済ができるか
+            items:
+              $ref: '#/components/schemas/QR_id'
+      ShopPostResponse:
+        type: object
+        properties:
+          error:
+            type: string
+            description: エラー文言
+          status_code:
+            type: integer
+            description: ステータスコード
+      ShopGetResponse:
+        type: object
+        properties:
+          name:
+            type: string
+            description: 店舗名
+          lunch_price_min:
+            type: integer
+            description: 昼の平均会計金額の低い方
+          lunch_price_max:
+            type: integer
+            description: 昼の平均会計金額の高い方
+          dinner_price_min:
+            type: integer
+            description: 夜の平均会計金額の低い方
+          dinner_price_max:
+            type: integer
+            description: 夜の平均会計金額の高い方
+          tel:
+            type: string
+            description: 電話番号
+          address:
+            type: string
+            description: 住所
+          inside_seat_number:
+            type: integer
+            description: 店内の席数
+          terrace_seat_number:
+            type: integer
+            description: テラス席の数
+          monday_open_time:
+            type: string
+            format: date-time
+            description: 月曜日の開店時間
+          monday_close_time:
+            type: string
+            format: date-time
+            description: 月曜日の閉店時間
+          tuesday_open_time:
+            type: string
+            format: date-time
+            description: 火曜日の開店時間
+          tuesday_close_time:
+            type: string
+            format: date-time
+            description: 火曜日の閉店時間
+          wednesday_open_time:
+            type: string
+            format: date-time
+            description: 水曜日の開店時間
+          wednesday_close_time:
+            type: string
+            format: date-time
+            description: 水曜日の閉店時間
+          thursday_open_time:
+            type: string
+            format: date-time
+            description: 木曜日の開店時間
+          thursday_close_time:
+            type: string
+            format: date-time
+            description: 木曜日の閉店時間
+          friday_open_time:
+            type: string
+            format: date-time
+            description: 金曜日の開店時間
+          friday_close_time:
+            type: string
+            format: date-time
+            description: 金曜日の閉店時間
+          saturday_open_time:
+            type: string
+            format: date-time
+            description: 土曜日の開店時間
+          saturday_close_time:
+            type: string
+            format: date-time
+            description: 土曜日の閉店時間
+          sunday_open_time:
+            type: string
+            format: date-time
+            description: 日曜日の開店時間
+          sunday_close_time:
+            type: string
+            format: date-time
+            description: 日曜日の閉店時間
+          holiday_ids:
+            type: array
+            description: 定休日
+            items:
+              $ref: '#/components/schemas/Holiday_id'
+          tag_id:
+            type: array
+            description: 洋食やカフェなどのタグ
+            items:
+              $ref: '#/components/schemas/Tag_id'
+          can_smoke:
+            type: boolean
+            description: 喫煙の可否
+          parking_number:
+            type: integer
+            description: 駐車場の有無
+          has_wifi:
+            type: boolean
+            description: wifiがあるかどうか
+          card_ids:
+            type: array
+            description: どのようなカードが使えるか
+            items:
+              $ref: '#/components/schemas/Card_id'
+          electronic_ids:
+            type: array
+            description: どのような電子決済ができるか
+            items:
+              $ref: '#/components/schemas/Electronic_id'
+          qr_ids:
+            type: array
+            description: どのようなQR決済ができるか
+            items:
+              $ref: '#/components/schemas/QR_id'
+      ShopPutRequest:
+        type: object
+        properties:
+          name:
+            type: string
+            description: 店舗名
+          lunch_price_min:
+            type: integer
+            description: 昼の平均会計金額の低い方
+          lunch_price_max:
+            type: integer
+            description: 昼の平均会計金額の高い方
+          dinner_price_min:
+            type: integer
+            description: 夜の平均会計金額の低い方
+          dinner_price_max:
+            type: integer
+            description: 夜の平均会計金額の高い方
+          tel:
+            type: string
+            description: 電話番号
+          address:
+            type: string
+            description: 住所
+          inside_seat_number:
+            type: integer
+            description: 店内の席数
+          terrace_seat_number:
+            type: integer
+            description: テラス席の数
+          monday_open_time:
+            type: string
+            format: date-time
+            description: 月曜日の開店時間
+          monday_close_time:
+            type: string
+            format: date-time
+            description: 月曜日の閉店時間
+          tuesday_open_time:
+            type: string
+            format: date-time
+            description: 火曜日の開店時間
+          tuesday_close_time:
+            type: string
+            format: date-time
+            description: 火曜日の閉店時間
+          wednesday_open_time:
+            type: string
+            format: date-time
+            description: 水曜日の開店時間
+          wednesday_close_time:
+            type: string
+            format: date-time
+            description: 水曜日の閉店時間
+          thursday_open_time:
+            type: string
+            format: date-time
+            description: 木曜日の開店時間
+          thursday_close_time:
+            type: string
+            format: date-time
+            description: 木曜日の閉店時間
+          friday_open_time:
+            type: string
+            format: date-time
+            description: 金曜日の開店時間
+          friday_close_time:
+            type: string
+            format: date-time
+            description: 金曜日の閉店時間
+          saturday_open_time:
+            type: string
+            format: date-time
+            description: 土曜日の開店時間
+          saturday_close_time:
+            type: string
+            format: date-time
+            description: 土曜日の閉店時間
+          sunday_open_time:
+            type: string
+            format: date-time
+            description: 日曜日の開店時間
+          sunday_close_time:
+            type: string
+            format: date-time
+            description: 日曜日の閉店時間
+          holiday_id:
+            type: array
+            description: 定休日
+            items:
+              $ref: '#/components/schemas/Holiday_id'
+          tag_id:
+            type: array
+            description: 洋食やカフェなどのタグ
+            items:
+              $ref: '#/components/schemas/Tag_id'
+          can_smoke:
+            type: boolean
+            description: 喫煙の可否
+          parking_number:
+            type: integer
+            description: 駐車場の有無
+          has_wifi:
+            type: boolean
+            description: wifiがあるかどうか
+          card_ids:
+            type: array
+            description: どのようなカードが使えるか
+            items:
+              $ref: '#/components/schemas/Card_id'
+          electronic_ids:
+            type: array
+            description: どのような電子決済ができるか
+            items:
+              $ref: '#/components/schemas/Electronic_id'
+          qr_ids:
+            type: array
+            description: どのようなQR決済ができるか
+            items:
+              $ref: '#/components/schemas/QR_id'
+      ShopPutResponse:
+        type: object
+        properties:
+          error:
+            type: string
+            description: エラー文言
+          status_code:
+            type: integer
+            description: ステータスコード
+      ShopDeleteResponse:
+        type: object
+        properties:
+          error:
+            type: string
+            description: エラー文言
+          status_code:
+            type: integer
+            description: ステータスコード
+      ShopFavoriteGetResponse:
+        type: object
+        properties:
+          shops:
+            type: array
+            items:
+              $ref: '#/components/schemas/Shop'
+            description: 店舗一覧
+      ShopFavoritePostRequest:
+        type: object
+        properties:
+          id:
+            type: integer
+            description: 店舗ID
+      ShopFavoritePostResponse:
+        type: object
+        properties:
+          error:
+            type: string
+            description: エラー文言
+          status_code:
+            type: integer
+            description: ステータスコード
+      ShopFavoriteDeleteRequest:
+        type: object
+        properties:
+          id:
+            type: integer
+            description: 店舗ID
+      ShopFavoriteDeleteResponse:
+        type: object
+        properties:
+          error:
+            type: string
+            description: エラー文言
+          status_code:
+            type: integer
+            description: ステータスコード
+      ShopListGetResponse:
+        type: object
+        properties:
+          shops:
+            type: array
+            items:
+              $ref: '#/components/schemas/Shop'
+            description: 店舗一覧
+      MapConditionGetResponse:
+        type: object
+        properties:
+          shops:
+            type: array
+            items:
+              $ref: '#/components/schemas/Shop'
+            description: 店舗一覧
+      MapSearchGetResponse:
+        type: object
+        properties:
+          shops:
+            type: array
+            items:
+              $ref: '#/components/schemas/Shop'
+            description: 店舗一覧
+      Shop:
+        type: object
+        properties:
+          name:
+            type: string
+            description: 店舗名
+          lunch_price_min:
+            type: integer
+            description: 昼の平均会計金額の低い方
+          lunch_price_max:
+            type: integer
+            description: 昼の平均会計金額の高い方
+          dinner_price_min:
+            type: integer
+            description: 夜の平均会計金額の低い方
+          dinner_price_max:
+            type: integer
+            description: 夜の平均会計金額の高い方
+          tel:
+            type: string
+            description: 電話番号
+          address:
+            type: string
+            description: 住所
+          inside_seat_number:
+            type: integer
+            description: 店内の席数
+          terrace_seat_number:
+            type: integer
+            description: テラス席の数
+          monday_open_time:
+            type: string
+            format: date-time
+            description: 月曜日の開店時間
+          monday_close_time:
+            type: string
+            format: date-time
+            description: 月曜日の閉店時間
+          tuesday_open_time:
+            type: string
+            format: date-time
+            description: 火曜日の開店時間
+          tuesday_close_time:
+            type: string
+            format: date-time
+            description: 火曜日の閉店時間
+          wednesday_open_time:
+            type: string
+            format: date-time
+            description: 水曜日の開店時間
+          wednesday_close_time:
+            type: string
+            format: date-time
+            description: 水曜日の閉店時間
+          thursday_open_time:
+            type: string
+            format: date-time
+            description: 木曜日の開店時間
+          thursday_close_time:
+            type: string
+            format: date-time
+            description: 木曜日の閉店時間
+          friday_open_time:
+            type: string
+            format: date-time
+            description: 金曜日の開店時間
+          friday_close_time:
+            type: string
+            format: date-time
+            description: 金曜日の閉店時間
+          saturday_open_time:
+            type: string
+            format: date-time
+            description: 土曜日の開店時間
+          saturday_close_time:
+            type: string
+            format: date-time
+            description: 土曜日の閉店時間
+          sunday_open_time:
+            type: string
+            format: date-time
+            description: 日曜日の開店時間
+          sunday_close_time:
+            type: string
+            format: date-time
+            description: 日曜日の閉店時間
+          holiday_id:
+            type: array
+            description: 定休日
+            items:
+              $ref: '#/components/schemas/Holiday_id'
+          tag_id:
+            type: array
+            description: 洋食やカフェなどのタグ
+            items:
+              $ref: '#/components/schemas/Tag_id'
+          can_smoke:
+            type: boolean
+            description: 喫煙の可否
+          parking_number:
+            type: integer
+            description: 駐車場の有無
+          has_wifi:
+            type: boolean
+            description: wifiがあるかどうか
+          card_ids:
+            type: array
+            description: どのようなカードが使えるか
+            items:
+              $ref: '#/components/schemas/Card_id'
+          electronic_ids:
+            type: array
+            description: どのような電子決済ができるか
+            items:
+              $ref: '#/components/schemas/Electronic_id'
+          qr_ids:
+            type: array
+            description: どのようなQR決済ができるか
+            items:
+              $ref: '#/components/schemas/QR_id'
+      Holiday_id:
+        type: object
+        properties:
+          id:
+            type: integer
+            description: 定休日
+      Card_id:
+        type: object
+        properties:
+          id:
+            type: integer
+            description: 利用可能なカード決済
+      Electronic_id:
+        type: object
+        properties:
+          id:
+            type: integer
+            description: 利用可能な電子決済
+      QR_id:
+        type: object
+        properties:
+          id:
+            type: integer
+            description: 利用可能なQRコード決済
+      Tag_id:
+        type: object
+        properties:
+          id:
+            type: integer
+            description: タグ
+      Against_infection:
+        type: object
+        properties:
+          for_customers:
+            type: array
+            description: お客様への取り組み
+            items:
+              $ref: '#/components/schemas/For_customers'
+          for_employees:
+            type: string
+            description: 従業員の安全衛生管理
+          for_shop:
+            type: string
+            description: 店舗の衛生管理
+      For_customers:
+        type: object
+        properties:
+          when_enter:
+            type: string
+            description: 入店時
+          when_introduce:
+            type: string
+            description: 案内時
+          when_order:
+            type: string
+            description: オーダー時
+          when_pay:
+            type: string
+            description: 会計時

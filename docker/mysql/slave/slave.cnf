@@ -1,0 +1,16 @@
+[mysqld]
+default_authentication_plugin=mysql_native_password
+character-set-server=utf8mb4
+# replicate-do-db=特定のDBだけレプリケーションしたい場合は指定する
+
+log_bin=mysql-bin
+server_id=11
+relay_log=/var/lib/mysql/mysql-relay-bin
+log_slave_updates=1
+read_only=1
+gtid_mode=ON
+enforce_gtid_consistency=ON
+expire_logs_days=5
+
+[client]
+default-character-set=utf8mb4
