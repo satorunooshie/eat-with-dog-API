@@ -27,7 +27,55 @@
 ![image](https://user-images.githubusercontent.com/64164948/122626315-c61f6800-d0e4-11eb-9318-ad5f17b4a901.png)
 
 ### Architecture
+- nginx
+- Go
+- MySQL replication
+- Redis replication
+- Swagger
 ### Install Guide
+```$ git clone https://github.com/satorunooshie/eat-with-dog-API.git /go/src/```
+
+```$ cd eat-with-dog-API && cp .env.example .env```
+
+```$ docker-compose up -d```
+
+#### Replication
+TODO: Shellに変更
+
+```$ docker network ls```
+
+```copy mysql_slave NETWORK ID```
+
+```$ docker inspect {NETWORK ID}```
+
+```copy mysql_master.IPv4Address```
+
+```$docker-compose exec mysql-slave bash```
+
+```$ mysql -u root -p```
+
+```mysql> SET GLOBAL SQL_SLAVE_SKIP_COUNTER=1;```
+
+```mysql> CHANGE MASTER TO MASTER_HOST='{mysql_master.IPv4Address}', MASTER_USER='{MYSQL_MASTER_USER}', MASTER_PASSWORD='{MYSQL_MASTER_PASSWORD}', MASTER_LOG_FILE='mysql-bin.000001', MASTER_LOG_POS=0;```
+
+```mysql> START SLAVE;```
+
+##### Replication Check
+```mysql> SHOW SLAVE STATUS;```
+
+```
+Slave_IO_Running: Yes
+Slave_SQL_Runnning: Yes
+```
+
+```$ docker-compose exec mysql-master bash```
+
+```$ mysql -u root -p```
+
+```mysql> SHOW MASTER STATUS;```
+
 ### Add Endpoint
+MUST UPDATE Swagger
 ### Test For API
+```$ cd eat-with-dog-API && go run mock.go```
 ### See Also
