@@ -37,46 +37,47 @@
 - elasticsearch
 - Swagger
 ### Install Guide
-```$ git clone https://github.com/satorunooshie/eat-with-dog-API.git /go/src/```
+```
+$ git clone https://github.com/satorunooshie/eat-with-dog-API.git /go/src/
 
-```$ cd eat-with-dog-API && cp .env.example .env```
+$ cd eat-with-dog-API && cp .env.example .env
 
-```$ docker-compose up -d```
+$ docker-compose up -d
+```
 
 #### Replication
 TODO: Shellに変更
+```
+$ docker network ls
 
-```$ docker network ls```
+# copy mysql_slave NETWORK ID
 
-```copy mysql_slave NETWORK ID```
+$ docker inspect {NETWORK ID}
 
-```$ docker inspect {NETWORK ID}```
+# copy mysql_master.IPv4Address
+$docker-compose exec mysql-slave bash
 
-```copy mysql_master.IPv4Address```
+$ mysql -u root -p
 
-```$docker-compose exec mysql-slave bash```
+mysql> SET GLOBAL SQL_SLAVE_SKIP_COUNTER=1;
 
-```$ mysql -u root -p```
+mysql> CHANGE MASTER TO MASTER_HOST='{mysql_master.IPv4Address}', MASTER_USER='{MYSQL_MASTER_USER}', MASTER_PASSWORD='{MYSQL_MASTER_PASSWORD}', MASTER_LOG_FILE='mysql-bin.000001', MASTER_LOG_POS=0;
 
-```mysql> SET GLOBAL SQL_SLAVE_SKIP_COUNTER=1;```
-
-```mysql> CHANGE MASTER TO MASTER_HOST='{mysql_master.IPv4Address}', MASTER_USER='{MYSQL_MASTER_USER}', MASTER_PASSWORD='{MYSQL_MASTER_PASSWORD}', MASTER_LOG_FILE='mysql-bin.000001', MASTER_LOG_POS=0;```
-
-```mysql> START SLAVE;```
+mysql> START SLAVE;
+```
 
 ##### Replication Check
-```mysql> SHOW SLAVE STATUS;```
-
 ```
+mysql> SHOW SLAVE STATUS;
 Slave_IO_Running: Yes
 Slave_SQL_Runnning: Yes
+
+$ docker-compose exec mysql-master bash
+
+$ mysql -u root -p
+
+mysql> SHOW MASTER STATUS;
 ```
-
-```$ docker-compose exec mysql-master bash```
-
-```$ mysql -u root -p```
-
-```mysql> SHOW MASTER STATUS;```
 
 ### Add Endpoint
 MUST UPDATE Swagger
