@@ -31,6 +31,10 @@
 - Go
 - MySQL replication
 - Redis replication
+- DynamoDB
+- grafana
+- kibana
+- elasticsearch
 - Swagger
 ### Install Guide
 ```$ git clone https://github.com/satorunooshie/eat-with-dog-API.git /go/src/```
@@ -77,5 +81,5 @@ Slave_SQL_Runnning: Yes
 ### Add Endpoint
 MUST UPDATE Swagger
 ### Test For API
-```$ cd eat-with-dog-API && go run mock.go```
+```$ docker-compose up -d```
 ### See Also
