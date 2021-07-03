@@ -8,7 +8,7 @@ import (
 
 func main() {
 	http.HandleFunc("/setting", func(w http.ResponseWriter, r *http.Request) {
-		setting := struct{
+		setting := struct {
 			Frequency int
 		}{
 			Frequency: 0,
