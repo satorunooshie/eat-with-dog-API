@@ -1,6 +1,8 @@
 package i18n
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func T(key string, args ...interface{}) string {
 	s := key
