@@ -127,6 +127,6 @@ func newNotFound(code, s string) AppError {
 func newInternalServerError(code, s string) AppError {
 	e := newError(code, i18n.T(s))
 	e.status = http.StatusInternalServerError
-	_ = e.Info()
+	_ = e.Critical()
 	return e
 }
