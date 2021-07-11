@@ -79,6 +79,34 @@ func (e *appError) Add(field string, data interface{}) AppError {
 	return e
 }
 
+func New(s string) AppError {
+	return create(s)
+}
+
+func Errorf(format string, args ...interface{}) AppError {
+	return create(fmt.Sprintf(format, args...))
+}
+
+func Wrap(err error, s ...string) AppError {
+	if err == nil {
+		return nil
+	}
+
+	var m string
+	if len(s) != 0 {
+		m = s[0]
+	}
+	e := create(m)
+	e.next = err
+	return e
+}
+
+func Wrapf(format string, err error, args ...interface{}) AppError {
+	e := create(fmt.Sprintf(format, args...))
+	e.next = err
+	return e
+}
+
 func AsAppError(err error) *appError {
 	if err == nil {
 		return nil
@@ -92,4 +120,11 @@ func AsAppError(err error) *appError {
 
 func As(err error, target interface{}) bool {
 	return xerrors.As(err, target)
+}
+
+func create(s string) *appError {
+	var e appError
+	e.message = s
+	e.frame = xerrors.Caller(2)
+	return &e
 }
