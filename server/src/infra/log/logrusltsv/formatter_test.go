@@ -28,9 +28,9 @@ func TestFormatter(t *testing.T) {
 			"custom":               &UserValue{},
 			"field\nwith\tspecial": "value\nwith\tspecial",
 		},
-		Time: time.Date(2006, 1, 2, 15, 05, 06, 07, location),
+		Time:    time.Date(2006, 1, 2, 15, 05, 06, 07, location),
 		Message: "test\a message\n",
-		Level: logrus.ErrorLevel,
+		Level:   logrus.ErrorLevel,
 	}
 
 	// Fields are sorted by alphabetical.
