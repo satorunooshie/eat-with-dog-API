@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	masterCache *cache.Cache
+	masterCache        *cache.Cache
 	nativeVersionCache *cache.Cache
 )
 
